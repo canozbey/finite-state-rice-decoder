@@ -31,7 +31,7 @@ public class StateVariables {
 		
 	}
 	
-	public void emit() {	//decode integer and store in a data structure when q and r are ready
+	public void emit() {	//decode integer and store it in a data structure when q and r are ready
 		
 		integer_stream.add( (q << k) | r);
 		
