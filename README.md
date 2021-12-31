@@ -5,4 +5,4 @@ Finite-state machine implementation is done using Enum types (see State.java). T
 
 The unary part is encoded as 0's followed by a 1 in this implementation.
 
-The abstract of the preprint paper that describes and evaluates the finite-state decoder can be found at https://www.researchgate.net/publication/342690106_Efficient_Finite-State_Decoding_of_Rice_Codes_for_Large_Alphabets.
+The paper that describes and evaluates the finite-state decoder can be found at https://www.researchgate.net/publication/344635127_Efficient_Finite-State_Decoding_of_Rice_Codes_for_Large_Alphabets
