@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# https://git-scm.com/docs/githooks#_pre_commit
+
+set -e
+set -o pipefail
+
+echo
+echo "  *** before commit we will check your formatting (you can skip it with flag '--no-verify' to commit command) ***"
+echo
+mvn com.diffplug.spotless:spotless-maven-plugin:check
+echo
+echo "all good! Thank you for your patience :)"
+echo
