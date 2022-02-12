@@ -32,6 +32,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.LongSupplier;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -118,9 +119,9 @@ public abstract class DemoTest {
         LongSerde s = createSerde();
         AtomicLong totalEncodedBytes = new AtomicLong();
         AtomicLong totalRawBytes = new AtomicLong();
-        Supplier<Long> nextLong = () -> Math.abs(r.nextLong());
+        LongSupplier nextLong = () -> Math.abs(r.nextLong());
         IntStream.range(0, iterations).forEach(iteration -> {
-            List<Long> elements = IntStream.range(0, maxElements).boxed().map(i -> nextLong.get()).sorted().collect(Collectors.toList());
+            List<Long> elements = LongStream.generate(nextLong).limit(maxElements).sorted().boxed().collect(Collectors.toList());
             totalRawBytes.addAndGet(elements.size() * 8L);
             byte[] encoded = encode(elements);
             totalEncodedBytes.addAndGet(encoded.length);
