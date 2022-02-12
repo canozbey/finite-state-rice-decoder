@@ -58,14 +58,6 @@ public class RiceLongSerde implements LongSerde {
         }
     }
 
-    public static byte log2(long val) {
-        if (val == 0) {
-            return 0;
-        }
-
-        return (byte) (63 - Long.numberOfLeadingZeros(val));
-    }
-
     @Override
     public void decode(InputStream bis, LongConsumer action) throws IOException {
         byte pow2mid = (byte) bis.read();
