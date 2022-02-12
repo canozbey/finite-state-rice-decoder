@@ -25,7 +25,6 @@
 package rice.encoding;
 
 import org.junit.jupiter.api.Test;
-import rice.encoding.rice.RiceLongSerde;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -42,12 +41,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class DemoTest {
+public abstract class DemoTest {
+
+    protected abstract LongSerde createSerde();
 
     private byte[] encode(Collection<Long> longs) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            ((LongSerde) new RiceLongSerde()).encode(new DataOutputStream(baos), longs);
+            createSerde().encode(new DataOutputStream(baos), longs);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -55,7 +56,7 @@ public class DemoTest {
     }
 
     private List<Long> decode(byte[] data) {
-        LongSerde s = new RiceLongSerde();
+        LongSerde s = createSerde();
         List<Long> ret = new ArrayList<>();
         try {
             s.decode(new ByteArrayInputStream(data), ret);
@@ -67,16 +68,16 @@ public class DemoTest {
 
     @Test
     public void testNullEncode() {
-        assertThrows(NullPointerException.class, () -> ((LongSerde) new RiceLongSerde()).encode(null, null));
-        assertThrows(NullPointerException.class, () -> ((LongSerde) new RiceLongSerde()).encode(new DataOutputStream(new ByteArrayOutputStream()), null));
-        assertThrows(NullPointerException.class, () -> ((LongSerde) new RiceLongSerde()).encode(null, Collections.emptyList()));
+        assertThrows(NullPointerException.class, () -> createSerde().encode(null, null));
+        assertThrows(NullPointerException.class, () -> createSerde().encode(new DataOutputStream(new ByteArrayOutputStream()), null));
+        assertThrows(NullPointerException.class, () -> createSerde().encode(null, Collections.emptyList()));
     }
 
     @Test
     public void testNullDecode() {
-        assertThrows(NullPointerException.class, () -> new RiceLongSerde().decode(null, (Collection<Long>) null));
-        assertThrows(NullPointerException.class, () -> new RiceLongSerde().decode(new ByteArrayInputStream(new byte[]{7, 8, 9}), (Collection<Long>) null));
-        assertThrows(NullPointerException.class, () -> new RiceLongSerde().decode(null, new ArrayList<>()));
+        assertThrows(NullPointerException.class, () -> createSerde().decode(null, (Collection<Long>) null));
+        assertThrows(NullPointerException.class, () -> createSerde().decode(new ByteArrayInputStream(new byte[]{7, 8, 9}), (Collection<Long>) null));
+        assertThrows(NullPointerException.class, () -> createSerde().decode(null, new ArrayList<>()));
     }
 
     @Test
@@ -114,13 +115,13 @@ public class DemoTest {
         int iterations = 1000;
         int maxElements = 1000;
         Random r = new Random(7);
-        LongSerde s = new RiceLongSerde();
+        LongSerde s = createSerde();
         AtomicLong totalEncodedBytes = new AtomicLong();
         AtomicLong totalRawBytes = new AtomicLong();
         Supplier<Long> nextLong = () -> Math.abs(r.nextLong());
         IntStream.range(0, iterations).forEach(iteration -> {
             List<Long> elements = IntStream.range(0, maxElements).boxed().map(i -> nextLong.get()).sorted().collect(Collectors.toList());
-            totalRawBytes.addAndGet(elements.size() * 8);
+            totalRawBytes.addAndGet(elements.size() * 8L);
             byte[] encoded = encode(elements);
             totalEncodedBytes.addAndGet(encoded.length);
             List<Long> decoded = decode(encoded);
@@ -129,5 +130,4 @@ public class DemoTest {
         double compressionRatio = totalRawBytes.get() / (double) totalEncodedBytes.get();
         System.out.printf("%s compression ratio - %s", s.getClass().getSimpleName(), compressionRatio);
     }
-
 }

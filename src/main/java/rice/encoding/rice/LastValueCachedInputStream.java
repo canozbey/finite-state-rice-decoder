@@ -82,7 +82,7 @@ public class LastValueCachedInputStream extends InputStream {
     public void close() throws IOException {
         in.close();
     }
-    
+
     public boolean isAtEof() {
         return lastRead == -1;
     }

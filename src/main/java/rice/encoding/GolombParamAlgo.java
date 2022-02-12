@@ -24,41 +24,17 @@
 
 package rice.encoding;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Collection;
-import java.util.function.LongConsumer;
-
 /**
- * A long integer encoding interface
+ * Algorithm for selecting the Golomb Parameter in Rice Coding
+ * This parameter is commonly known as just K
+ * <p>
+ * Usage:
+ * - you got to iterate over an encoded data and call {@link GolombParamAlgo#acceptElement(long)} method
+ * - after the iteration over the data, method {@link GolombParamAlgo#calculateK()} will calculate the Golomb parameter
  */
-public interface LongSerde {
-    /**
-     * Encode a sorted collection of longs into an output stream
-     *
-     * @param os    output stream
-     * @param longs sorted collection of longs
-     * @throws IOException if an encoding error occurs
-     */
-    void encode(OutputStream os, Collection<Long> longs) throws IOException;
+public interface GolombParamAlgo {
 
-    /**
-     * Decode a sorted collection of longs from an input stream
-     *
-     * @param is     input stream
-     * @param output output collection to insert longs into
-     * @throws IOException if a decoding error occurs
-     */
-    default void decode(InputStream is, Collection<Long> output) throws IOException {
-        decode(is, output::add);
-    }
+    void acceptElement(long element);
 
-    /**
-     * Decode longs from an input stream and do some action on every decoded value
-     *
-     * @param is input stream
-     * @throws IOException if a decoding error occurs
-     */
-    void decode(InputStream is, LongConsumer action) throws IOException;
+    byte calculateK();
 }

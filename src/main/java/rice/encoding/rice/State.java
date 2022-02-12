@@ -48,7 +48,7 @@ public enum State {
 
     Q0 {
         @Override
-        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException{
+        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException {
 
             int b = stream.moveAndRead() & 0xFF;
 
@@ -66,7 +66,7 @@ public enum State {
     },
     Q1 {
         @Override
-        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException{
+        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException {
 
             stream.move();
 
@@ -84,7 +84,7 @@ public enum State {
     },
     Q2 {
         @Override
-        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException{
+        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException {
 
             int b = stream.readLast() & 0xFF;
 
@@ -104,7 +104,7 @@ public enum State {
     },
     Q3 {
         @Override
-        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException{
+        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException {
 
             int b = stream.moveAndRead() & 0xFF;
 
@@ -121,7 +121,7 @@ public enum State {
     },
     Q4 {
         @Override
-        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException{
+        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException {
 
             stream.move();
 
@@ -139,7 +139,7 @@ public enum State {
     },
     Q5 {
         @Override
-        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException{
+        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException {
 
             int b = stream.readLast() & 0xFF;
 
@@ -159,7 +159,7 @@ public enum State {
     },
     Q6 {
         @Override
-        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException{
+        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException {
 
             stream.move();
 
@@ -179,7 +179,7 @@ public enum State {
     },
     Q7 {
         @Override
-        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException{
+        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException {
 
             long t = var.log2[var.m];
 
@@ -201,7 +201,7 @@ public enum State {
     },
     T0 {
         @Override
-        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException{
+        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException {
 
             int b = stream.readLastAndMove() & 0xFF;
 
@@ -223,7 +223,7 @@ public enum State {
     },
     R0 {
         @Override
-        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException{
+        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException {
 
             var.r = stream.readLastAndMove() & 0xFF;
 
@@ -241,7 +241,7 @@ public enum State {
     },
     R1 {
         @Override
-        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException{
+        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException {
 
             int b = stream.readLastAndMove() & 0xFF;
 
@@ -265,7 +265,7 @@ public enum State {
     },
     R2 {
         @Override
-        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException{
+        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException {
 
             int b = stream.readLast() & 0xFF;
 
@@ -289,7 +289,7 @@ public enum State {
     },
     R3 {
         @Override
-        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException{
+        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException {
 
             int b = stream.readLastAndMove() & 0xFF;
 
@@ -310,7 +310,7 @@ public enum State {
     },
     R4 {
         @Override
-        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException{
+        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException {
 
             int b = stream.readLastAndMove() & 0xFF;
 
@@ -336,7 +336,7 @@ public enum State {
     },
     R5 {
         @Override
-        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException{
+        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException {
 
             int b = stream.readLast() & 0xFF;
 
@@ -360,7 +360,7 @@ public enum State {
     },
     R6 {
         @Override
-        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException{
+        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException {
 
             int b = stream.readLastAndMove() & 0xFF;
 
@@ -384,7 +384,7 @@ public enum State {
     },
     R7 {
         @Override
-        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException{
+        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException {
 
             int b = stream.readLast() & 0xFF;
 
@@ -408,7 +408,7 @@ public enum State {
     },
     T1 {
         @Override
-        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException{
+        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException {
 
             int b = stream.moveAndRead() & 0xFF;
 
@@ -429,13 +429,13 @@ public enum State {
     },
     F {
         @Override
-        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException{
+        public State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException {
 
             return null;
         }
     };
 
-    public abstract State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action)throws IOException;
+    public abstract State execute(LastValueCachedInputStream stream, StateVariables var, LongConsumer action) throws IOException;
 
 
 }

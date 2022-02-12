@@ -35,7 +35,6 @@ import java.io.OutputStream;
  * This class is *not* thread safe
  * <p>
  * This implementation is based on <a href="https://www.researchgate.net/publication/344635127_Efficient_Finite-State_Decoding_of_Rice_Codes_for_Large_Alphabets">this paper</a>
- * 
  *
  * @see <a href="http://en.wikipedia.org/wiki/Golomb_coding">Rice Encoding</a>
  */
