@@ -24,6 +24,7 @@
 
 package rice.encoding.rice;
 
+import rice.encoding.GolombParamAlgo;
 import rice.encoding.LongSerde;
 
 import java.io.IOException;
@@ -39,12 +40,18 @@ import java.util.function.LongConsumer;
  */
 public class RiceLongSerde implements LongSerde {
 
+    private final GolombParamAlgo golombParamAlgo;
+
+    public RiceLongSerde(GolombParamAlgo golombParamAlgo) {
+        this.golombParamAlgo = golombParamAlgo;
+    }
+
     @Override
     public void encode(OutputStream os, Collection<Long> ids) throws IOException {
-        Diffs diffs = new Diffs(ids);
-        byte log2avg = (byte) Math.max((byte) 1, log2(diffs.avg));
-        try (RiceSinkByteFsm rs = new RiceSinkByteFsm(log2avg, os)) {
-            os.write(log2avg);
+        Diffs diffs = new Diffs(ids, golombParamAlgo);
+        byte k = golombParamAlgo.calculateK();
+        try (RiceSinkByteFsm rs = new RiceSinkByteFsm(k, os)) {
+            os.write(k);
             for (long diff : diffs.diffs) {
                 rs.write(diff);
             }
@@ -80,7 +87,7 @@ public class RiceLongSerde implements LongSerde {
         private final List<Long> diffs;
         private final long avg;
 
-        private Diffs(Collection<Long> original) {
+        private Diffs(Collection<Long> original, GolombParamAlgo golombParamAlgo) {
             int sz = original.size();
             diffs = new ArrayList<>(sz);
             LongRunningAvg runningAvg = new LongRunningAvg();
@@ -89,6 +96,7 @@ public class RiceLongSerde implements LongSerde {
                 long diff = id - last;
                 diffs.add(diff);
                 runningAvg.add(diff);
+                golombParamAlgo.acceptElement(diff);
                 last = id;
             }
             avg = runningAvg.get();
