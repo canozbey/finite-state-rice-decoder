@@ -24,9 +24,6 @@
 
 package rice.encoding.rice;
 
-import rice.encoding.GolombParamAlgo;
-import rice.encoding.LongSerde;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -34,80 +31,79 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.LongConsumer;
+import rice.encoding.GolombParamAlgo;
+import rice.encoding.LongSerde;
 
-/**
- * A golomb/rice long serializer
- */
+/** A golomb/rice long serializer */
 public class RiceLongSerde implements LongSerde {
 
-    private final GolombParamAlgo golombParamAlgo;
+  private final GolombParamAlgo golombParamAlgo;
 
-    public RiceLongSerde(GolombParamAlgo golombParamAlgo) {
-        this.golombParamAlgo = golombParamAlgo;
+  public RiceLongSerde(GolombParamAlgo golombParamAlgo) {
+    this.golombParamAlgo = golombParamAlgo;
+  }
+
+  @Override
+  public void encode(OutputStream os, Collection<Long> ids) throws IOException {
+    Diffs diffs = new Diffs(ids, golombParamAlgo);
+    byte k = golombParamAlgo.calculateK();
+    try (RiceSinkByteFsm rs = new RiceSinkByteFsm(k, os)) {
+      os.write(k);
+      for (long diff : diffs.diffs) {
+        rs.write(diff);
+      }
     }
+  }
 
-    @Override
-    public void encode(OutputStream os, Collection<Long> ids) throws IOException {
-        Diffs diffs = new Diffs(ids, golombParamAlgo);
-        byte k = golombParamAlgo.calculateK();
-        try (RiceSinkByteFsm rs = new RiceSinkByteFsm(k, os)) {
-            os.write(k);
-            for (long diff : diffs.diffs) {
-                rs.write(diff);
-            }
-        }
-    }
+  @Override
+  public void decode(InputStream bis, LongConsumer action) throws IOException {
+    byte pow2mid = (byte) bis.read();
+    RiceSourceByteFsm rs = new RiceSourceByteFsm(pow2mid, new LastValueCachedInputStream(bis));
 
-    @Override
-    public void decode(InputStream bis, LongConsumer action) throws IOException {
-        byte pow2mid = (byte) bis.read();
-        RiceSourceByteFsm rs = new RiceSourceByteFsm(pow2mid, new LastValueCachedInputStream(bis));
-
-        final long[] last = {0};
-        boolean hasNext;
-        do {
-            hasNext = rs.tryAdvance(diff -> {
+    final long[] last = {0};
+    boolean hasNext;
+    do {
+      hasNext =
+          rs.tryAdvance(
+              diff -> {
                 long id = last[0] + diff;
                 last[0] = id;
                 action.accept(id);
-            });
-        } while (hasNext);
+              });
+    } while (hasNext);
+  }
+
+  private static final class Diffs {
+    private final List<Long> diffs;
+    private final long avg;
+
+    private Diffs(Collection<Long> original, GolombParamAlgo golombParamAlgo) {
+      int sz = original.size();
+      diffs = new ArrayList<>(sz);
+      LongRunningAvg runningAvg = new LongRunningAvg();
+      long last = 0;
+      for (long id : original) {
+        long diff = id - last;
+        diffs.add(diff);
+        runningAvg.add(diff);
+        golombParamAlgo.acceptElement(diff);
+        last = id;
+      }
+      avg = runningAvg.get();
+    }
+  }
+
+  /** A running average */
+  private static class LongRunningAvg {
+    double currentAverage = 0;
+    long sz = 0;
+
+    public long add(double value) {
+      return (long) (currentAverage = (currentAverage * sz + value) / ++sz);
     }
 
-
-    private final static class Diffs {
-        private final List<Long> diffs;
-        private final long avg;
-
-        private Diffs(Collection<Long> original, GolombParamAlgo golombParamAlgo) {
-            int sz = original.size();
-            diffs = new ArrayList<>(sz);
-            LongRunningAvg runningAvg = new LongRunningAvg();
-            long last = 0;
-            for (long id : original) {
-                long diff = id - last;
-                diffs.add(diff);
-                runningAvg.add(diff);
-                golombParamAlgo.acceptElement(diff);
-                last = id;
-            }
-            avg = runningAvg.get();
-        }
+    public long get() {
+      return (long) currentAverage;
     }
-
-    /**
-     * A running average
-     */
-    private static class LongRunningAvg {
-        double currentAverage = 0;
-        long sz = 0;
-
-        public long add(double value) {
-            return (long) (currentAverage = (currentAverage * sz + value) / ++sz);
-        }
-
-        public long get() {
-            return (long) currentAverage;
-        }
-    }
+  }
 }

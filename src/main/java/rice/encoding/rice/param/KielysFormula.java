@@ -24,20 +24,20 @@
 
 package rice.encoding.rice.param;
 
-
 /**
- * @see <a href=https://www.researchgate.net/publication/252469081_Selecting_the_Golomb_Parameter_in_Rice_Coding>Selecting the Golomb Parameter in Rice Coding</a>
+ * @see <a
+ *     href=https://www.researchgate.net/publication/252469081_Selecting_the_Golomb_Parameter_in_Rice_Coding>Selecting
+ *     the Golomb Parameter in Rice Coding</a>
  */
 public class KielysFormula extends Log2ArithmeticMean {
-    //golden ratio minus 1
-    public static final double FI_MINUS_ONE = 0.61803398875;
+  // golden ratio minus 1
+  public static final double FI_MINUS_ONE = 0.61803398875;
 
-    @Override
-    public byte calculateK() {
+  @Override
+  public byte calculateK() {
 
-        double ratio = Math.log(FI_MINUS_ONE) / Math.log(currentAverage / (currentAverage + 1));
+    double ratio = Math.log(FI_MINUS_ONE) / Math.log(currentAverage / (currentAverage + 1));
 
-        return (byte) Math.max((int) (Math.log(ratio) / Math.log(2)) + 1, 0);
-    }
-
+    return (byte) Math.max((int) (Math.log(ratio) / Math.log(2)) + 1, 0);
+  }
 }

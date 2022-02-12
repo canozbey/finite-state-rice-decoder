@@ -28,62 +28,63 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Input stream which caches the last read value and has special methods for moving along across the underlying stream
+ * Input stream which caches the last read value and has special methods for moving along across the
+ * underlying stream
  */
 public class LastValueCachedInputStream extends InputStream {
-    private final InputStream in;
-    private int lastRead;
+  private final InputStream in;
+  private int lastRead;
 
-    /**
-     * Construct a {@code CountingInputStream}
-     *
-     * @param in input stream
-     */
-    public LastValueCachedInputStream(InputStream in) {
-        this.in = in;
-    }
+  /**
+   * Construct a {@code CountingInputStream}
+   *
+   * @param in input stream
+   */
+  public LastValueCachedInputStream(InputStream in) {
+    this.in = in;
+  }
 
-    @Override
-    public int available() throws IOException {
-        return in.available();
-    }
+  @Override
+  public int available() throws IOException {
+    return in.available();
+  }
 
-    @Override
-    public int read() throws IOException {
-        lastRead = in.read();
-        return lastRead;
-    }
+  @Override
+  public int read() throws IOException {
+    lastRead = in.read();
+    return lastRead;
+  }
 
-    @Override
-    public int read(byte[] b, int off, int len) throws IOException {
-        lastRead = in.read(b, off, len);
-        return lastRead;
-    }
+  @Override
+  public int read(byte[] b, int off, int len) throws IOException {
+    lastRead = in.read(b, off, len);
+    return lastRead;
+  }
 
-    public int readLast() {
-        return lastRead;
-    }
+  public int readLast() {
+    return lastRead;
+  }
 
-    public int readLastAndMove() throws IOException {
-        int lastRead = this.lastRead;
-        read();
-        return lastRead;
-    }
+  public int readLastAndMove() throws IOException {
+    int lastRead = this.lastRead;
+    read();
+    return lastRead;
+  }
 
-    public int moveAndRead() throws IOException {
-        return read();
-    }
+  public int moveAndRead() throws IOException {
+    return read();
+  }
 
-    public void move() throws IOException {
-        read();
-    }
+  public void move() throws IOException {
+    read();
+  }
 
-    @Override
-    public void close() throws IOException {
-        in.close();
-    }
+  @Override
+  public void close() throws IOException {
+    in.close();
+  }
 
-    public boolean isAtEof() {
-        return lastRead == -1;
-    }
+  public boolean isAtEof() {
+    return lastRead == -1;
+  }
 }

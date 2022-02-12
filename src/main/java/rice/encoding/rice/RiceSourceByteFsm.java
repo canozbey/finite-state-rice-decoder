@@ -29,34 +29,35 @@ import java.util.function.LongConsumer;
 
 /**
  * A "rice" encoding source that reads from an {@link java.io.InputStream}
- * <p>
- * This class is *not* thread safe
- * <p>
- * This implementation is based on <a href="https://www.researchgate.net/publication/344635127_Efficient_Finite-State_Decoding_of_Rice_Codes_for_Large_Alphabets">this paper</a>
+ *
+ * <p>This class is *not* thread safe
+ *
+ * <p>This implementation is based on <a
+ * href="https://www.researchgate.net/publication/344635127_Efficient_Finite-State_Decoding_of_Rice_Codes_for_Large_Alphabets">this
+ * paper</a>
  *
  * @see <a href="http://en.wikipedia.org/wiki/Golomb_coding">Rice Encoding</a>
  */
 public class RiceSourceByteFsm {
-    private final LastValueCachedInputStream stream;
-    private State state;
-    StateVariables var;
+  private final LastValueCachedInputStream stream;
+  private State state;
+  StateVariables var;
 
+  public RiceSourceByteFsm(byte k, LastValueCachedInputStream riceroni) {
+    stream = riceroni;
+    var = new StateVariables((int) k);
+    state = State.S;
+  }
 
-    public RiceSourceByteFsm(byte k, LastValueCachedInputStream riceroni) {
-        stream = riceroni;
-        var = new StateVariables((int) k);
-        state = State.S;
+  public boolean tryAdvance(LongConsumer action) throws IOException {
+    if (isAtEof()) {
+      return false;
     }
+    state = state.execute(stream, var, action);
+    return true;
+  }
 
-    public boolean tryAdvance(LongConsumer action) throws IOException {
-        if (isAtEof()) {
-            return false;
-        }
-        state = state.execute(stream, var, action);
-        return true;
-    }
-
-    private boolean isAtEof() {
-        return stream.isAtEof() || state.equals(State.F);
-    }
+  private boolean isAtEof() {
+    return stream.isAtEof() || state.equals(State.F);
+  }
 }

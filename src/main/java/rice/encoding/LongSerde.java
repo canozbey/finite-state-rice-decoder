@@ -30,35 +30,33 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.function.LongConsumer;
 
-/**
- * A long integer encoding interface
- */
+/** A long integer encoding interface */
 public interface LongSerde {
-    /**
-     * Encode a sorted collection of longs into an output stream
-     *
-     * @param os    output stream
-     * @param longs sorted collection of longs
-     * @throws IOException if an encoding error occurs
-     */
-    void encode(OutputStream os, Collection<Long> longs) throws IOException;
+  /**
+   * Encode a sorted collection of longs into an output stream
+   *
+   * @param os output stream
+   * @param longs sorted collection of longs
+   * @throws IOException if an encoding error occurs
+   */
+  void encode(OutputStream os, Collection<Long> longs) throws IOException;
 
-    /**
-     * Decode a sorted collection of longs from an input stream
-     *
-     * @param is     input stream
-     * @param output output collection to insert longs into
-     * @throws IOException if a decoding error occurs
-     */
-    default void decode(InputStream is, Collection<Long> output) throws IOException {
-        decode(is, output::add);
-    }
+  /**
+   * Decode a sorted collection of longs from an input stream
+   *
+   * @param is input stream
+   * @param output output collection to insert longs into
+   * @throws IOException if a decoding error occurs
+   */
+  default void decode(InputStream is, Collection<Long> output) throws IOException {
+    decode(is, output::add);
+  }
 
-    /**
-     * Decode longs from an input stream and do some action on every decoded value
-     *
-     * @param is input stream
-     * @throws IOException if a decoding error occurs
-     */
-    void decode(InputStream is, LongConsumer action) throws IOException;
+  /**
+   * Decode longs from an input stream and do some action on every decoded value
+   *
+   * @param is input stream
+   * @throws IOException if a decoding error occurs
+   */
+  void decode(InputStream is, LongConsumer action) throws IOException;
 }

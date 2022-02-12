@@ -25,16 +25,16 @@
 package rice.encoding;
 
 /**
- * Algorithm for selecting the Golomb Parameter in Rice Coding
- * This parameter is commonly known as just K
- * <p>
- * Usage:
- * - you got to iterate over an encoded data and call {@link GolombParamAlgo#acceptElement(long)} method
- * - after the iteration over the data, method {@link GolombParamAlgo#calculateK()} will calculate the Golomb parameter
+ * Algorithm for selecting the Golomb Parameter in Rice Coding This parameter is commonly known as
+ * just K
+ *
+ * <p>Usage: - you got to iterate over an encoded data and call {@link
+ * GolombParamAlgo#acceptElement(long)} method - after the iteration over the data, method {@link
+ * GolombParamAlgo#calculateK()} will calculate the Golomb parameter
  */
 public interface GolombParamAlgo {
 
-    void acceptElement(long element);
+  void acceptElement(long element);
 
-    byte calculateK();
+  byte calculateK();
 }

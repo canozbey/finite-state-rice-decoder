@@ -27,25 +27,24 @@ package rice.encoding.rice.param;
 import rice.encoding.GolombParamAlgo;
 
 public class Log2ArithmeticMean implements GolombParamAlgo {
-    protected double currentAverage = 0;
-    protected long size = 0;
+  protected double currentAverage = 0;
+  protected long size = 0;
 
+  @Override
+  public void acceptElement(long element) {
+    currentAverage = (currentAverage * size + (double) element) / ++size;
+  }
 
-    @Override
-    public void acceptElement(long element) {
-        currentAverage = (currentAverage * size + (double) element) / ++size;
+  @Override
+  public byte calculateK() {
+    return (byte) Math.max((byte) 1, log2((long) currentAverage));
+  }
+
+  public static byte log2(long val) {
+    if (val == 0) {
+      return 0;
     }
 
-    @Override
-    public byte calculateK() {
-        return (byte) Math.max((byte) 1, log2((long) currentAverage));
-    }
-
-    public static byte log2(long val) {
-        if (val == 0) {
-            return 0;
-        }
-
-        return (byte) (63 - Long.numberOfLeadingZeros(val));
-    }
+    return (byte) (63 - Long.numberOfLeadingZeros(val));
+  }
 }

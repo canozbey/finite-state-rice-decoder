@@ -29,9 +29,8 @@ import rice.encoding.rice.param.Log2ArithmeticMean;
 
 public class Log2ArithmeticMeanDemoTest extends DemoTest {
 
-
-    @Override
-    protected LongSerde createSerde() {
-        return new RiceLongSerde(new Log2ArithmeticMean());
-    }
+  @Override
+  protected LongSerde createSerde() {
+    return new RiceLongSerde(new Log2ArithmeticMean());
+  }
 }
